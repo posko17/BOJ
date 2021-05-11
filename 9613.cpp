@@ -3,34 +3,36 @@
 #include <queue>
 #include <fstream>
 using namespace std;
-priority_queue<int> q;
-void gcd(int, int);
+typedef long long ll;
+priority_queue<ll> q;
+void gcd(ll, ll);
+
 int main()
 {
     ifstream cin("input.txt");
     ofstream cout("output.txt");
-    int min, max;
-    int a, b;
-    int t;
+    ll min, max;
+    ll a, b;
+    ll t;
     cin >> t;
-    for (int j = 0; j < t; j++)
+    for (ll j = 0; j < t; j++)
     {
-        int n, temp;
+        ll n, temp;
         cin >> n;
-        vector<int> v;
-        for (int i = 0; i < n; i++)
+        vector<ll> v;
+        for (ll i = 0; i < n; i++)
         {
             cin >> temp;
             v.push_back(temp);
         }
-        for (int i = 0; i < v.size(); i++)
+        for (ll i = 0; i < v.size(); i++)
         {
-            for (int j = i + 1; j < v.size(); j++)
+            for (ll j = i + 1; j < v.size(); j++)
             {
                 gcd((v[i] < v[j] ? v[j] : v[i]), (v[i] > v[j] ? v[j] : v[i]));
             }
         }
-        int sum = 0;
+        ll sum = 0;
         while (q.size())
         {
             sum += q.top();
@@ -40,9 +42,9 @@ int main()
     }
     return 0;
 }
-void gcd(int greater, int less)
+void gcd(ll greater, ll less)
 {
-    int r;
+    ll r;
     r = greater % less;
     if (r == 0)
     {
