@@ -1,80 +1,87 @@
 #include <iostream>
-#include <vector>
-#include <queue>
+#include <algorithm>
 #include <fstream>
-#include <utility>
 using namespace std;
-int v[501][501];
-vector<pair<int, int>> s[501][501];
-priority_queue<int> q;
-void search(int r, int c, int count, int sum);
+
+const int MAX = 500;
+
+typedef struct dir
+{
+    int r, c;
+} DIR;
+DIR moveDir[4] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+
+bool is_visited[MAX][MAX];
+int mat[MAX][MAX];
 int row, col;
+
+int DFS(int r, int c, int count)
+{
+    if (count == 4)
+        return mat[r][c];
+    int nextr, nextc;
+    int sum = 0;
+    for (int i = 0; i < 4; i++)
+    {
+        nextr = r + moveDir[i].r;
+        nextc = c + moveDir[i].c;
+        if (nextr >= 0 && nextr < row && nextc >= 0 && nextc < col && !is_visited[nextr][nextc])
+        {
+            is_visited[nextr][nextc] = true;
+            sum = max(sum, mat[r][c] + DFS(nextr, nextc, count + 1));
+            is_visited[nextr][nextc] = false;
+        }
+    }
+    return sum;
+}
+
+int fuck(int r, int c)
+{
+    int sum = 0;
+    //ㅓ
+    if (r >= 1 && c >= 1 && r < row - 1)
+    {
+        sum = max(sum, mat[r][c] + mat[r - 1][c] + mat[r][c - 1] + mat[r + 1][c]);
+    }
+    //ㅗ
+    if (r >= 1 && c >= 1 && c < col - 1)
+    {
+        sum = max(sum, mat[r][c] + mat[r - 1][c] + mat[r][c - 1] + mat[r][c + 1]);
+    }
+    //ㅏ
+    if (r >= 1 && c < col - 1 && r < row - 1)
+    {
+        sum = max(sum, mat[r][c] + mat[r - 1][c] + mat[r + 1][c] + mat[r][c + 1]);
+    }
+    //ㅜ
+    if (c < col - 1 && c >= 1 && r < row - 1)
+    {
+        sum = max(sum, mat[r][c] + mat[r][c - 1] + mat[r][c + 1] + mat[r + 1][c]);
+    }
+
+    return sum;
+}
+
 int main()
 {
     ifstream cin("input.txt");
     ofstream cout("output.txt");
     cin >> row >> col;
     for (int i = 0; i < row; i++)
-    {
         for (int j = 0; j < col; j++)
         {
-            cin >> v[i][j];
-            s[i][j].push_back(make_pair(i, j));
+            cin >> mat[i][j];
         }
-    }
+    int sum = 0;
     for (int i = 0; i < row; i++)
-    {
         for (int j = 0; j < col; j++)
         {
-            search(i, j, 0, 0);
+            is_visited[i][j] = true;
+            sum = max(sum, DFS(i, j, 1));
+            sum = max(sum, fuck(i, j));
+            is_visited[i][j] = false;
         }
-    }
-    cout << q.top();
+
+    cout << sum;
     return 0;
-}
-void search(int r, int c, int count, int sum)
-{
-    if (r < 0 || c < 0 || r >= row || c >= col)
-    {
-        return;
-    }
-    if (count == 4)
-    {
-        q.push(sum);
-        return;
-    }
-
-    sum += v[r][c];
-    //
-    switch (d)
-    {
-    case 1:
-        search(r, c - 1, count + 1, sum, 3);
-        search(r + 1, c, count + 1, sum, 1);
-        search(r, c + 1, count + 1, sum, 2);
-        break;
-    case 2:
-        search(r - 1, c, count + 1, sum, 4);
-        search(r + 1, c, count + 1, sum, 1);
-        search(r, c + 1, count + 1, sum, 2);
-        break;
-    case 3:
-        search(r - 1, c, count + 1, sum, 4);
-        search(r, c - 1, count + 1, sum, 3);
-        search(r + 1, c, count + 1, sum, 1);
-        break;
-    case 4:
-        search(r - 1, c, count + 1, sum, 4);
-        search(r, c - 1, count + 1, sum, 3);
-        search(r, c + 1, count + 1, sum, 2);
-        break;
-    default:
-        search(r - 1, c, count + 1, sum, 4);
-        search(r, c - 1, count + 1, sum, 3);
-        search(r + 1, c, count + 1, sum, 1);
-        search(r, c + 1, count + 1, sum, 2);
-        break;
-    }
-
-    return;
 }
