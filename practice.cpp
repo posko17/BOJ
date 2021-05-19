@@ -1,7 +1,10 @@
 #include <iostream>
+#include <queue>
+
 using namespace std;
 int main()
 {
-    long long a=1;
-    cout<<(a*1000000*1000000*1000000);
+    priority_queue<int> a;
+    cout << a.top();
+    return 0;
 }

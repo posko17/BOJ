@@ -9,7 +9,7 @@ const int MAX = 10001;
 int location[MAX];
 bool is_visited[MAX];
 priority_queue<int> g;
-priority_queue<int, vector<int>, greater<int>> l;
+priority_queue<int, vector<int>, greater<int> > l;
 
 int main()
 {
